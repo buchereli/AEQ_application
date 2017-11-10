@@ -27,21 +27,66 @@ public class CastleBuilder {
 
     // Converts a String representation of an int array into an int array
     public static int[] stringToIntArray(String input) {
-        return null;
+        // Empty input edge case
+        if (input.isEmpty())
+            return new int[0];
+
+        String[] stringArray = input.split(",");
+        int[] intArray = new int[stringArray.length];
+
+        for (int i = 0; i < stringArray.length; i++)
+            intArray[i] = Integer.parseInt(stringArray[i]);
+
+        return intArray;
     }
 
     // Returns the number of local min and max in an int array
     public static int countLocals(int[] array) {
-        return -1;
+        int count = 0;
+        for (int i = 0; i < array.length; i++)
+            if (isLocal(array, i))
+                count++;
+
+        return count;
     }
 
     // Returns if an index is a local min or max in an int array
     private static boolean isLocal(int[] array, int index) {
+        // Start index then return true
+        if (index == 0)
+            return true;
+
+        // If end index and not part of flat then return true
+        if (index == array.length - 1)
+            return array[index] != array[index - 1];
+
+        // If min, return true
+        if (array[index - 1] > array[index] && array[index] <= array[index + 1]) {
+            if (array[index] == array[index + 1])
+                return isPlateau(array, index, true);
+
+            return true;
+        }
+
+        // If max, return true
+        if (array[index - 1] < array[index] && array[index] >= array[index + 1]) {
+            if (array[index] == array[index + 1])
+                return isPlateau(array, index, false);
+
+            return true;
+        }
+
         return false;
     }
 
     // Returns true if index is the start of a plateau or inverted plateau
     private static boolean isPlateau(int[] array, int index, boolean min) {
+        for (int i = index + 2; i < array.length; i++) {
+            if (array[index] < array[i])
+                return min;
+            if (array[index] > array[i])
+                return !min;
+        }
         return true;
     }
 
