@@ -10,7 +10,7 @@ public class CastleBuilder {
 
     final private static Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String input;
 
         // If input is given directly vs requested with scanner
@@ -22,14 +22,21 @@ public class CastleBuilder {
         int[] land = stringToIntArray(input);
         int count = countLocals(land);
 
-        System.out.println(count);
+        System.out.println("You can build " + count + " castles!");
     }
 
     // Converts a String representation of an int array into an int array
-    public static int[] stringToIntArray(String input) {
+    public static int[] stringToIntArray(String input) throws Exception {
         // Empty input edge case
         if (input.isEmpty())
             return new int[0];
+
+        // Remove spaces
+        input = input.replace(" ", "");
+
+        // Make sure the input uses csv without letters
+        if(!input.matches("([0-9],)*[0-9]"))
+            throw new Exception("Bad formatting! Make sure you are using csv format");
 
         String[] stringArray = input.split(",");
         int[] intArray = new int[stringArray.length];
