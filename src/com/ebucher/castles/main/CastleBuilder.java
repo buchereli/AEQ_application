@@ -22,7 +22,7 @@ public class CastleBuilder {
         int[] land = stringToIntArray(input);
         int count = countLocals(land);
 
-        System.out.println("You can build " + count + " castles!");
+        System.out.println("You can build " + count + " castle" + (count != 1 ? "s" : "") + "!");
     }
 
     // Converts a String representation of an int array into an int array
@@ -35,7 +35,7 @@ public class CastleBuilder {
         input = input.replace(" ", "");
 
         // Make sure the input uses csv without letters
-        if(!input.matches("([0-9],)*[0-9]+"))
+        if (!input.matches("([0-9],)*[0-9]+"))
             throw new Exception("Bad formatting! Make sure you are using csv format");
 
         String[] stringArray = input.split(",");
