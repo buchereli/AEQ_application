@@ -35,7 +35,7 @@ public class CastleBuilder {
         input = input.replace(" ", "");
 
         // Make sure the input uses csv without letters
-        if(!input.matches("([0-9],)*[0-9]"))
+        if(!input.matches("([0-9],)*[0-9]+"))
             throw new Exception("Bad formatting! Make sure you are using csv format");
 
         String[] stringArray = input.split(",");
