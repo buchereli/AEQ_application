@@ -9,10 +9,20 @@ import java.util.Collections;
  */
 public class TransformerBattle {
 
-    private static final ArrayList<Transformer> autobots = new ArrayList<>(), decepticons = new ArrayList<>();
-    private static final ArrayList<Transformer> winners = new ArrayList<>();
+    private static ArrayList<Transformer> autobots, decepticons;
+    private static ArrayList<Transformer> winners;
 
     public static void main(String[] args) throws Exception {
+        init(args);
+
+        printResults(battle());
+    }
+
+    public static void init(String[] args) throws Exception {
+        autobots = new ArrayList<>();
+        decepticons = new ArrayList<>();
+        winners = new ArrayList<>();
+
         // Create and add transformers to a list
         final ArrayList<Transformer> transformers = new ArrayList<>();
         for (String arg : args)
@@ -27,24 +37,46 @@ public class TransformerBattle {
                 autobots.add(transformer);
             else
                 decepticons.add(transformer);
-
-        int battleCount = battle();
     }
 
     // Fight and add winners to a list, returns number of battles
     public static int battle() {
         int battleCount = 0;
+
+        // Fight all transformers
         while (autobots.size() > 0 && decepticons.size() > 0) {
             winners.add(fight(autobots.get(0), decepticons.get(0)));
-            autobots.remove(0);
-            decepticons.remove(0);
+            if (autobots.size() > 0)
+                autobots.remove(0);
+            if (decepticons.size() > 0)
+                decepticons.remove(0);
             battleCount++;
         }
+
+        // Add back survivors
+        for (Transformer winner : winners)
+            if (winner != null) {
+                if (winner.getTeam().equals("Autobots"))
+                    autobots.add(winner);
+                else
+                    decepticons.add(winner);
+            }
+
         return battleCount;
     }
 
     // Returns the transformer that won the fight
     public static Transformer fight(Transformer t1, Transformer t2) {
+        int result = t1.fight(t2);
+        if (result == 1)
+            return t1;
+        if (result == -1)
+            return t2;
+        if (result == -2) {
+            winners = new ArrayList<>();
+            autobots = new ArrayList<>();
+            decepticons = new ArrayList<>();
+        }
         return null;
     }
 
@@ -63,8 +95,38 @@ public class TransformerBattle {
     }
 
     // Prints the results of the battle
-    public static void printResults() {
+    public static void printResults(int battleCount) {
+        System.out.println(battleCount + " battle" + (battleCount != 1 ? "s" : ""));
 
+        int autobotScore = getAutobotScore();
+        if (autobotScore > 0) {
+            System.out.println("Winning team (Autobots): " + arrayListToString(autobots));
+            System.out.println("Survivors from losing team (Decipticons): " + arrayListToString(decepticons));
+        } else if (autobotScore < 0) {
+            System.out.println("Winning team (Decipticons): " + arrayListToString(decepticons));
+            System.out.println("Survivors from losing team (Autobots): " + arrayListToString(autobots));
+        } else {
+            System.out.println("The game was a tie!");
+            if (autobots.size() == 0)
+                System.out.println("There were no surviving autobots");
+            else
+                System.out.println(arrayListToString(autobots) + " (Autobots) survived");
+            if (decepticons.size() == 0)
+                System.out.println("There were no surviving decepticons");
+            else
+                System.out.println(arrayListToString(autobots) + " (Decipticons) survived");
+        }
+    }
+
+    private static String arrayListToString(ArrayList<Transformer> list) {
+        if (list.isEmpty())
+            return "";
+
+        StringBuilder s = new StringBuilder();
+        for (Transformer transformer : list)
+            s.append(transformer.getName()).append(", ");
+
+        return s.substring(0, s.length() - 2);
     }
 
 }
